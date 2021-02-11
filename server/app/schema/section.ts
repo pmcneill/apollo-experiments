@@ -3,14 +3,14 @@ import { gql } from 'apollo-server-express';
 export default gql`
   type Section {
     id: ID!
-    course: Course!
+    course: Course
     term: Term!
     code: String!
     sis_id: String!
     status: String!
-    teachers: [Enrollment]!
-    students: [Enrollment]!
-    users: [User]!
+    teachers: [Enrollment!]
+    students: [Enrollment!]
+    users: [User!]
   }
 
   extend type Query {

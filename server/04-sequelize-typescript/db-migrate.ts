@@ -20,8 +20,8 @@ const sequelize = new Sequelize({
 
 async function run() {
   // Set up the database
-  await User.sync();
-  await Message.sync();
+  await User.sync({ alter: true });
+  await Message.sync({ alter: true });
 }
 
 run();

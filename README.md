@@ -73,3 +73,7 @@ The "server" directory contains an evolution of the 06 example, using it as a st
 * Express: http://expressjs.com/en/guide/routing.html
 * Sequelize + Apollo server tutorial: https://www.robinwieruch.de/graphql-apollo-server-
 * Authentication with JWT: https://www.robinwieruch.de/graphql-apollo-server-tutorial#apollo-server-authentication
+
+
+* https://blog.logrocket.com/build-a-graphql-react-app-with-typescript/
+* https://github.com/ember-graphql/ember-apollo-client

@@ -5,7 +5,7 @@ export default gql`
     id: ID!
     name: String!
     code: String!
-    sections: [Section]!
+    sections: [Section!]
   }
 
   extend type Query {
