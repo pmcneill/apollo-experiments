@@ -1,0 +1,26 @@
+div.App {
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: 150px auto auto 150px;
+}
+
+div.App header {
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+
+header h2 {
+  margin: 0;
+}
+
+div.App nav {
+  grid-row-start: 2;
+  grid-row-end: 4;
+}
+
+div.App .content {
+  grid-row-start: 2;
+  grid-row-end: 4;
+  grid-column-start: 2;
+  grid-row-end: 4;
+}

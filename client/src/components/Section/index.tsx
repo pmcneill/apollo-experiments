@@ -1,46 +1,61 @@
 import {
   useParams,
+  Link,
 } from 'react-router-dom';
 
-const data = {
-  name: 'Some section you picked',
-  code: 'OLMSC-150 or OHARM-101',
-  instructors: [
-    { id: 2886, name: 'Patrick McNeill' }
-  ],
-  enrollments: [
-    { id: 50, user: { id: 100, name: 'Alice' }, type: 'credit' },
-    { id: 51, user: { id: 101, name: 'Bob' }, type: 'degree' },
-    { id: 52, user: { id: 102, name: 'Carol' }, type: 'noncredit' },
-  ],
-};
+import { TermSelect } from '../TermSelect';
 
-interface Props {
-  term_id: string,
-};
+import { useSectionQuery } from '../../generated/graphql';
 
-export const Section : React.FC<Props> = ({ term_id }) => {
-  const { section_id } = useParams<{section_id: string}>();
+export const Section : React.FC = () => {
+  const { id } = useParams<{id: string}>();
+
+  const { data, error, loading } = useSectionQuery({ variables: { id } });
+
+  if ( loading ) {
+    return <div>Still loading</div>;
+  }
+
+  if ( error || ! data || ! data.section ) {
+    return <div>Huh.  No section data.  Weird, right? {error && error.message}</div>;
+  }
+
 
   return (
-    <div>
-      <h3>Section {section_id} in {term_id}: {data.code} {data.name}</h3>
-
-      <div>
-        Teachers:
+    <>
+      <nav>
+        <TermSelect value={data.section.term.id}/>
 
         <ul>
-          {data.instructors.map((ins) => <li key={ins.id}>{ins.name} ({ins.id})</li>)}
+          <li><Link to={`/terms/reports`}>Reports</Link></li>
         </ul>
-      </div>
+      </nav>
 
-      <div>
-        Students:
+      <header>
+        <div className="term">
+          <Link to={`/terms/${data.section.term.id}`}>{data.section.term.name}</Link>
+        </div>
+        <h2>{data.section.course.code}.{data.section.code}: {data.section.course.name}</h2>
+      </header>
 
-        <ul>
-          {data.enrollments.map((enr) => <li key={enr.id}>{enr.user.name} ({enr.user.id}), {enr.type}</li>)}
-        </ul>
+      <div className="content">
+        <div>
+          Teachers:
+
+          <ul>
+            {data.section.teachers.map((tch) => <li key={tch.id}><Link to={`/users/${tch.user.id}`}>{tch.user.name}</Link></li>)}
+          </ul>
+        </div>
+
+        <div>
+          Students:
+
+          <ul>
+            {data.section.students.map((stu) => <li key={stu.id}><Link to={`/users/${stu.user.id}`}>{stu.user.name}</Link> - {stu.type}</li>)}
+          </ul>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
+

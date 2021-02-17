@@ -2,37 +2,42 @@ import {
   useRouteMatch,
   useParams,
   Link,
-  Route,
-  Switch,
 } from 'react-router-dom';
 
-import { Section } from '../Section';
+import {
+  useTermSectionsQuery,
+} from '../../generated/graphql';
 
-const sections = [
-  { id: 10, code: 'OLMSC-150.01', name: 'Programming' },
-  { id: 11, code: 'OLMSC-150.02', name: 'Programming' },
-  { id: 12, code: 'OHARM-101.01', name: 'Music Theory' },
-  { id: 13, code: 'OHARM-101.01', name: 'Music Theory' },
-];
+import { TermSelect } from '../TermSelect';
 
 export function TermSections() {
-  let { url } = useRouteMatch();
-  let { term_id } = useParams<{term_id: string}>();
+  const { url } = useRouteMatch();
+  const { id } = useParams<{id: string}>();
+
+  const { data, error, loading } = useTermSectionsQuery( { variables: { id } } );
+
+  if ( loading ) {
+    return <div>Still loading</div>;
+  }
+
+  if ( error || ! data || ! data.term ) {
+    return <div>Huh.  No term.  Weird, right?</div>;
+  }
 
   return (
-    <div>
-      <Switch>
-        <Route path={`${url}/sections/:section_id`}><Section term_id={term_id}/></Route>
-        <Route exact path={url}>
-          <h2>Term {term_id} Sections</h2>
+    <>
+      <nav><TermSelect value={id}/></nav>
+      <header><h2>{data.term.name} Sections</h2></header>
 
-          <ul>
-            {sections.map((sec) => (
-              <li key={sec.id}><Link to={`${url}/sections/${sec.id}`}>{sec.code}: {sec.name}</Link></li>
-            ))}
-          </ul>
-        </Route>
-      </Switch>
-    </div>
+      <div className="content">
+        <ul>
+          {data.term.sections && data.term.sections.map((sec) => (
+            <li key={sec.id}><Link to={`/sections/${sec.id}`}>
+              {sec.course.code}.{sec.code}: {sec.course.name}
+            </Link></li>
+          ))}
+        </ul>
+      </div>
+    </>
   );
 };

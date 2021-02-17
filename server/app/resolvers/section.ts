@@ -46,8 +46,16 @@ const resolvers : Resolvers = {
       return s.$get('users');
     },
 
+    course: async (s: Section) => {
+      return s.$get('course');
+    },
+
+    term: async (s: Section) => {
+      return s.$get('term');
+    },
+
     students: async (s: Section) => {
-      return Enrollment.findAll({
+      return await Enrollment.findAll({
         where: {
           section_id: s.id,
           type: {
@@ -59,7 +67,7 @@ const resolvers : Resolvers = {
     },
 
     teachers: async (s: Section) => {
-      return Enrollment.findAll({
+      return await Enrollment.findAll({
         where: {
           section_id: s.id,
           type: 'teacher',

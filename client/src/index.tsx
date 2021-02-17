@@ -5,11 +5,23 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 
+import { ApolloClient, ApolloProvider, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
+import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
+
+const client = new ApolloClient({
+  uri: 'http://127.0.0.1:8999/gql',
+  cache: new InMemoryCache(),
+});
+
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <ApolloProvider client={client}>
+      <ApolloHooksProvider client={client}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ApolloHooksProvider>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
