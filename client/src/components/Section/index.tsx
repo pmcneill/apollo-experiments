@@ -1,16 +1,21 @@
 import {
+  useState,
+} from 'react';
+
+import {
   useParams,
   Link,
 } from 'react-router-dom';
 
 import { TermSelect } from '../TermSelect';
+import { EnrollModal } from '../EnrollModal';
 
 import { useSectionQuery } from '../../generated/graphql';
 
 export const Section : React.FC = () => {
   const { id } = useParams<{id: string}>();
-
-  const { data, error, loading } = useSectionQuery({ variables: { id } });
+  const { data, error, loading, refetch } = useSectionQuery({ variables: { id } });
+  const [ showEnrollModal, setShowEnrollModal ] = useState(false);
 
   if ( loading ) {
     return <div>Still loading</div>;
@@ -21,13 +26,22 @@ export const Section : React.FC = () => {
   }
 
 
+  const showModal = () => setShowEnrollModal(true);
+  const hideModal = () => setShowEnrollModal(false);
+
+  const saveModal = async () => {
+    await refetch();
+    hideModal();
+  };
+
   return (
     <>
+      <EnrollModal section_id={id} isVisible={showEnrollModal} onSave={saveModal} onCancel={hideModal} />
       <nav>
         <TermSelect value={data.section.term.id}/>
 
         <ul>
-          <li><Link to={`/terms/reports`}>Reports</Link></li>
+          <li><button onClick={showModal}>Enroll</button></li>
         </ul>
       </nav>
 
