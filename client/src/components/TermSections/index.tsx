@@ -1,4 +1,8 @@
 import {
+  useState
+} from 'react';
+
+import {
   useRouteMatch,
   useParams,
   Link,
@@ -10,11 +14,15 @@ import {
 
 import { TermSelect } from '../TermSelect';
 
+import { CreateSection } from '../Modals/CreateSection';
+
 export function TermSections() {
   const { url } = useRouteMatch();
   const { id } = useParams<{id: string}>();
 
   const { data, error, loading } = useTermSectionsQuery( { variables: { id } } );
+
+  let [ showCreateModal, setShowCreateModal ] = useState(false);
 
   if ( loading ) {
     return <div>Still loading</div>;
@@ -24,9 +32,26 @@ export function TermSections() {
     return <div>Huh.  No term.  Weird, right?</div>;
   }
 
+  const showModal = () => setShowCreateModal(true);
+  const hideModal = () => setShowCreateModal(false);
+
+  const saveModal = (values: Record<string, string>) => {
+    console.log("SAVED!");
+    for ( let k in values ) {
+      console.log(`${k} => ${values[k]}`);
+    }
+    hideModal();
+  };
+
   return (
     <>
-      <nav><TermSelect value={id}/></nav>
+      <CreateSection isVisible={showCreateModal} onSave={saveModal} onCancel={hideModal}/>
+
+      <nav>
+        <TermSelect value={id}/>
+
+        <a onClick={showModal}>Create Section</a>
+      </nav>
       <header><h2>{data.term.name} Sections</h2></header>
 
       <div className="content">
