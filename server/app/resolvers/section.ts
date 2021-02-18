@@ -18,7 +18,8 @@ const resolvers : Resolvers = {
       return Section.create({
         course_id,
         term_id,
-        code
+        code,
+        status: 'hidden',
       });
     },
 

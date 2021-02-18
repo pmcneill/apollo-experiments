@@ -173,6 +173,38 @@ export enum CacheControlScope {
 }
 
 
+export type CoursesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CoursesQuery = (
+  { __typename?: 'Query' }
+  & { courses: Array<(
+    { __typename?: 'Course' }
+    & Pick<Course, 'id' | 'name' | 'code'>
+  )> }
+);
+
+export type CourseQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type CourseQuery = (
+  { __typename?: 'Query' }
+  & { course?: Maybe<(
+    { __typename?: 'Course' }
+    & Pick<Course, 'id' | 'name' | 'code'>
+    & { sections?: Maybe<Array<(
+      { __typename?: 'Section' }
+      & Pick<Section, 'id' | 'code'>
+      & { term: (
+        { __typename?: 'Term' }
+        & Pick<Term, 'id' | 'name' | 'starts'>
+      ) }
+    )>> }
+  )> }
+);
+
 export type SectionQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -228,6 +260,21 @@ export type TermSectionsQuery = (
   )> }
 );
 
+export type CreateSectionMutationVariables = Exact<{
+  course_id: Scalars['ID'];
+  term_id: Scalars['ID'];
+  code: Scalars['String'];
+}>;
+
+
+export type CreateSectionMutation = (
+  { __typename?: 'Mutation' }
+  & { createSection: (
+    { __typename?: 'Section' }
+    & Pick<Section, 'id' | 'code' | 'sis_id'>
+  ) }
+);
+
 export type TermsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -253,6 +300,84 @@ export type TermQuery = (
 );
 
 
+export const CoursesDocument = gql`
+    query Courses {
+  courses {
+    id
+    name
+    code
+  }
+}
+    `;
+
+/**
+ * __useCoursesQuery__
+ *
+ * To run a query within a React component, call `useCoursesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCoursesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCoursesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCoursesQuery(baseOptions?: Apollo.QueryHookOptions<CoursesQuery, CoursesQueryVariables>) {
+        return Apollo.useQuery<CoursesQuery, CoursesQueryVariables>(CoursesDocument, baseOptions);
+      }
+export function useCoursesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CoursesQuery, CoursesQueryVariables>) {
+          return Apollo.useLazyQuery<CoursesQuery, CoursesQueryVariables>(CoursesDocument, baseOptions);
+        }
+export type CoursesQueryHookResult = ReturnType<typeof useCoursesQuery>;
+export type CoursesLazyQueryHookResult = ReturnType<typeof useCoursesLazyQuery>;
+export type CoursesQueryResult = Apollo.QueryResult<CoursesQuery, CoursesQueryVariables>;
+export const CourseDocument = gql`
+    query Course($id: ID!) {
+  course(id: $id) {
+    id
+    name
+    code
+    sections {
+      id
+      code
+      term {
+        id
+        name
+        starts
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useCourseQuery__
+ *
+ * To run a query within a React component, call `useCourseQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCourseQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCourseQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useCourseQuery(baseOptions: Apollo.QueryHookOptions<CourseQuery, CourseQueryVariables>) {
+        return Apollo.useQuery<CourseQuery, CourseQueryVariables>(CourseDocument, baseOptions);
+      }
+export function useCourseLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CourseQuery, CourseQueryVariables>) {
+          return Apollo.useLazyQuery<CourseQuery, CourseQueryVariables>(CourseDocument, baseOptions);
+        }
+export type CourseQueryHookResult = ReturnType<typeof useCourseQuery>;
+export type CourseLazyQueryHookResult = ReturnType<typeof useCourseLazyQuery>;
+export type CourseQueryResult = Apollo.QueryResult<CourseQuery, CourseQueryVariables>;
 export const SectionDocument = gql`
     query Section($id: ID!) {
   section(id: $id) {
@@ -358,6 +483,42 @@ export function useTermSectionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type TermSectionsQueryHookResult = ReturnType<typeof useTermSectionsQuery>;
 export type TermSectionsLazyQueryHookResult = ReturnType<typeof useTermSectionsLazyQuery>;
 export type TermSectionsQueryResult = Apollo.QueryResult<TermSectionsQuery, TermSectionsQueryVariables>;
+export const CreateSectionDocument = gql`
+    mutation createSection($course_id: ID!, $term_id: ID!, $code: String!) {
+  createSection(course_id: $course_id, term_id: $term_id, code: $code) {
+    id
+    code
+    sis_id
+  }
+}
+    `;
+export type CreateSectionMutationFn = Apollo.MutationFunction<CreateSectionMutation, CreateSectionMutationVariables>;
+
+/**
+ * __useCreateSectionMutation__
+ *
+ * To run a mutation, you first call `useCreateSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSectionMutation, { data, loading, error }] = useCreateSectionMutation({
+ *   variables: {
+ *      course_id: // value for 'course_id'
+ *      term_id: // value for 'term_id'
+ *      code: // value for 'code'
+ *   },
+ * });
+ */
+export function useCreateSectionMutation(baseOptions?: Apollo.MutationHookOptions<CreateSectionMutation, CreateSectionMutationVariables>) {
+        return Apollo.useMutation<CreateSectionMutation, CreateSectionMutationVariables>(CreateSectionDocument, baseOptions);
+      }
+export type CreateSectionMutationHookResult = ReturnType<typeof useCreateSectionMutation>;
+export type CreateSectionMutationResult = Apollo.MutationResult<CreateSectionMutation>;
+export type CreateSectionMutationOptions = Apollo.BaseMutationOptions<CreateSectionMutation, CreateSectionMutationVariables>;
 export const TermsDocument = gql`
     query Terms {
   terms {

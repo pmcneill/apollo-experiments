@@ -18,4 +18,12 @@ export const QUERY_TERM_SECTIONS = gql`
       }
     }
   }
+
+  mutation createSection($course_id: ID!, $term_id: ID!, $code: String!) {
+    createSection(course_id: $course_id, term_id: $term_id, code: $code) {
+      id
+      code
+      sis_id
+    }
+  }
 `;
